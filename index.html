@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulare Admitere - Zamfir Alexandru</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>Simulare Admitere</h1>
+    <h2>Pregătire Admitere Medicină</h2>
+    <p>Profesor: <strong>Zamfir Alexandru</strong></p>
+</header>
+
+
+<div class="container">
+
+    <div class="info">
+
+        <label>
+            Nume și prenume:
+            <input type="text" id="nume" placeholder="Introduceți numele">
+        </label>
+
+        <div id="timer">
+            Timp rămas: 150:00
+        </div>
+
+    </div>
+
+
+    <div id="progress">
+        Întrebări completate: 0 / 100
+    </div>
+
+
+    <form id="testForm">
+
+        <div id="questions"></div>
+
+        <button type="button" onclick="predaTest()">
+            PREDĂ LUCRAREA
+        </button>
+
+    </form>
+
+
+</div>
+
+<script src="barem.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
