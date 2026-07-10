@@ -1,0 +1,136 @@
+
+#introCinematic {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(55,169,255,.14), transparent 25rem),
+    radial-gradient(circle at 50% 55%, rgba(214,177,95,.12), transparent 32rem),
+    linear-gradient(145deg,#020916,#06172d 55%,#0b294f);
+  color: white;
+  transition: opacity .9s ease, visibility .9s ease;
+}
+#introCinematic.intro-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+#introCinematic::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  opacity: .13;
+  background-image: radial-gradient(circle,rgba(255,255,255,.65) 0 1px,transparent 1.5px);
+  background-size: 44px 44px;
+  animation: introStars 16s linear infinite;
+}
+.intro-c-stage {
+  width: min(94vw, 900px);
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+.intro-c-svg {
+  width: min(88vw, 680px);
+  max-height: 57vh;
+  overflow: visible;
+}
+.intro-c-pulse {
+  stroke-dasharray: 1200;
+  stroke-dashoffset: 1200;
+  filter: url(#introGlow);
+  animation: introPulseDraw 1s ease .15s forwards, introPulseDim .6s ease 1.05s forwards;
+}
+.intro-c-draw {
+  stroke-dasharray: 750;
+  stroke-dashoffset: 750;
+  filter: url(#introGlow);
+  animation: introPathDraw 1.45s ease 1.05s forwards;
+}
+.intro-c-dna {
+  opacity: 0;
+  transform-origin: 400px 250px;
+  animation: introDnaIn .85s ease 2.15s forwards;
+}
+.intro-c-book {
+  opacity: 0;
+  transform-origin: 400px 400px;
+  animation: introBookIn .8s ease 2.65s forwards;
+}
+.intro-c-title,
+.intro-c-doctor,
+.intro-c-motto,
+.intro-c-dots {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.intro-c-title {
+  margin: .05rem 0 0;
+  font: 700 clamp(2rem,6vw,4.4rem) Georgia,serif;
+  letter-spacing: .08em;
+  color: #f2db97;
+  animation: introTextIn .7s ease 3.15s forwards;
+}
+.intro-c-doctor {
+  margin: .45rem 0;
+  font: 400 clamp(1.2rem,3vw,2rem) Georgia,serif;
+  animation: introTextIn .65s ease 3.48s forwards;
+}
+.intro-c-motto {
+  margin: .6rem 0 0;
+  color: #dceafb;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  animation: introTextIn .65s ease 3.78s forwards;
+}
+.intro-c-dots {
+  display: flex;
+  justify-content: center;
+  gap: .45rem;
+  margin-top: 1.15rem;
+  animation: introTextIn .45s ease 4s forwards;
+}
+.intro-c-dots span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #42b9ff;
+  animation: introDot 1s ease-in-out infinite;
+}
+.intro-c-dots span:nth-child(2){animation-delay:.15s}
+.intro-c-dots span:nth-child(3){animation-delay:.3s}
+#introSkip {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 4;
+  border: 1px solid rgba(255,255,255,.28);
+  border-radius: 999px;
+  padding: .7rem 1rem;
+  background: rgba(255,255,255,.07);
+  color: white;
+  cursor: pointer;
+}
+@keyframes introPulseDraw { to { stroke-dashoffset: 0; } }
+@keyframes introPulseDim { to { opacity: .24; } }
+@keyframes introPathDraw { to { stroke-dashoffset: 0; } }
+@keyframes introDnaIn {
+  from { opacity:0; transform:scale(.65) rotate(-8deg); }
+  to { opacity:1; transform:scale(1) rotate(0); }
+}
+@keyframes introBookIn {
+  from { opacity:0; transform:scaleX(.35) translateY(22px); }
+  to { opacity:1; transform:scaleX(1) translateY(0); }
+}
+@keyframes introTextIn { to { opacity:1; transform:translateY(0); } }
+@keyframes introDot {
+  0%,100% { transform:scale(.65); opacity:.45; }
+  50% { transform:scale(1.18); opacity:1; }
+}
+@keyframes introStars { to { transform:translate3d(44px,44px,0); } }
+@media (prefers-reduced-motion: reduce) {
+  #introCinematic * { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+}
