@@ -1,8 +1,13 @@
 const container = document.getElementById("questions");
 const progress = document.getElementById("progress");
+const timerElement = document.getElementById("timer");
+const intro = document.getElementById("intro");
+const app = document.getElementById("app");
+const skipIntro = document.getElementById("skipIntro");
 
 let timp = durataMinute * 60;
 let timerInterval;
+let testPredat = false;
 
 function citesteBarem(text) {
     const rezultat = {};
@@ -15,9 +20,18 @@ function citesteBarem(text) {
 
 const barem = citesteBarem(baremText);
 
-document.querySelector("header h1").innerText = numeTest;
-document.querySelector("header h2").innerText = "Admitere Medicină – dr. Zamfir Alexandru";
-document.querySelector("header p").innerHTML = `Data testului: <strong>${dataTest}</strong>`;
+document.getElementById("titluTest").innerText = numeTest;
+document.getElementById("dataAfisata").innerHTML =
+    `Data testului: <strong>${dataTest}</strong>`;
+
+function inchideIntro() {
+    intro.classList.add("intro-hidden");
+    app.classList.remove("app-hidden");
+    setTimeout(() => intro.remove(), 900);
+}
+
+skipIntro.addEventListener("click", inchideIntro);
+setTimeout(inchideIntro, 4200);
 
 function genereazaIntrebari() {
     container.innerHTML = "";
@@ -26,16 +40,22 @@ function genereazaIntrebari() {
         const div = document.createElement("div");
         div.className = "question";
 
+        const variante = ["A", "B", "C", "D", "E"]
+            .map(litera => `
+                <label class="answer-option">
+                    <input
+                        type="radio"
+                        name="q${i}"
+                        value="${litera}"
+                        onchange="actualizeazaProgres()"
+                    >
+                    <span>${litera}</span>
+                </label>
+            `).join("");
+
         div.innerHTML = `
-            <h3>Întrebarea ${i}</h3>
-            <div class="answers">
-                ${["A", "B", "C", "D", "E"].map(litera => `
-                    <label>
-                        <input type="radio" name="q${i}" value="${litera}" onchange="actualizeazaProgres()">
-                        ${litera}
-                    </label>
-                `).join("")}
-            </div>
+            <div class="question-number">${i}</div>
+            <div class="answers">${variante}</div>
         `;
 
         container.appendChild(div);
@@ -51,35 +71,69 @@ function actualizeazaProgres() {
         }
     }
 
-    progress.innerHTML = `Întrebări completate: ${completate} / ${totalIntrebari}`;
+    progress.innerHTML =
+        `Întrebări completate: <strong>${completate} / ${totalIntrebari}</strong>`;
+}
+
+function afiseazaTimp() {
+    const minute = Math.floor(timp / 60);
+    const secunde = timp % 60;
+    timerElement.innerHTML =
+        `Timp rămas: <strong>${minute}:${String(secunde).padStart(2, "0")}</strong>`;
 }
 
 function pornesteTimer() {
-    document.getElementById("timer").innerHTML = `Timp rămas: ${durataMinute}:00`;
+    afiseazaTimp();
 
     timerInterval = setInterval(() => {
         timp--;
+        afiseazaTimp();
 
-        const minute = Math.floor(timp / 60);
-        const secunde = timp % 60;
+        if (timp === 15 * 60) {
+            alert("Mai aveți 15 minute.");
+        }
 
-        document.getElementById("timer").innerHTML =
-            `Timp rămas: ${minute}:${secunde < 10 ? "0" : ""}${secunde}`;
+        if (timp === 5 * 60) {
+            alert("Mai aveți 5 minute.");
+        }
 
         if (timp <= 0) {
             clearInterval(timerInterval);
-            predaTest();
+            predaTest(true);
         }
     }, 1000);
 }
 
-function predaTest() {
+function predaTest(automat = false) {
+    if (testPredat) return;
+
     const nume = document.getElementById("nume").value.trim();
 
     if (!nume) {
+        if (automat) {
+            alert("Timpul a expirat, dar numele candidatului nu este completat.");
+            return;
+        }
+
         alert("Te rog introdu numele și prenumele.");
         return;
     }
+
+    if (!automat) {
+        const completate = document.querySelectorAll(
+            '#questions input[type="radio"]:checked'
+        ).length;
+
+        const lipsa = totalIntrebari - completate;
+        const mesaj = lipsa > 0
+            ? `Mai sunt ${lipsa} întrebări necompletate. Doriți să predați?`
+            : "Doriți să predați lucrarea?";
+
+        if (!confirm(mesaj)) return;
+    }
+
+    testPredat = true;
+    clearInterval(timerInterval);
 
     let corecte = 0;
     const gresite = [];
@@ -105,13 +159,16 @@ function predaTest() {
     }
 
     const procent = ((corecte / totalIntrebari) * 100).toFixed(2);
+    const timpFolositSecunde = durataMinute * 60 - Math.max(timp, 0);
+    const minuteFolosite = Math.floor(timpFolositSecunde / 60);
+    const secundeFolosite = timpFolositSecunde % 60;
 
     const randuriGresite = gresite.length
         ? gresite.map(item => `
             <tr>
                 <td>${item.intrebare}</td>
-                <td style="color:#b30000; font-weight:bold;">${item.raspunsElev}</td>
-                <td style="color:#198754; font-weight:bold;">${item.raspunsCorect}</td>
+                <td class="wrong"><strong>${item.raspunsElev}</strong></td>
+                <td class="correct"><strong>${item.raspunsCorect}</strong></td>
             </tr>
         `).join("")
         : `
@@ -124,96 +181,98 @@ function predaTest() {
         ? necompletate.join(", ")
         : "Nicio întrebare necompletată.";
 
-    const randuriBarem = Array.from(
-        { length: totalIntrebari },
-        (_, index) => {
-            const nr = index + 1;
-            return `
-                <tr>
-                    <td>${nr}</td>
-                    <td style="color:#198754; font-weight:bold;">${barem[nr]}</td>
-                </tr>
-            `;
-        }
-    ).join("");
-
-    clearInterval(timerInterval);
+    const baremComplet = Array.from({ length: totalIntrebari }, (_, index) => {
+        const nr = index + 1;
+        return `<div class="key-cell">${nr}: <b>${barem[nr]}</b></div>`;
+    }).join("");
 
     document.body.innerHTML = `
-        <header>
-            <h1>${numeTest}</h1>
-            <h2>Admitere Medicină – dr. Zamfir Alexandru</h2>
-            <p>Data testului: <strong>${dataTest}</strong></p>
-        </header>
+        <main class="app-shell">
+            <header class="site-header">
+                <div class="brand">
+                    <img src="assets/logo.svg" alt="Logo" class="brand-logo">
+                    <div>
+                        <h1>${numeTest}</h1>
+                        <h2>Admitere Medicină – dr. Zamfir Alexandru</h2>
+                        <p>Data testului: <strong>${dataTest}</strong></p>
+                    </div>
+                </div>
+            </header>
 
-        <div class="container">
-            <div class="info">
-                <h2>Lucrarea a fost predată cu succes.</h2>
+            <div class="container">
+                <section class="result-card">
+                    <h2>${automat ? "Timpul a expirat. Lucrarea a fost predată automat." : "Lucrarea a fost predată cu succes."}</h2>
+                    <p><strong>Candidat:</strong> ${nume}</p>
+                    <p><strong>Timp utilizat:</strong> ${minuteFolosite} min ${secundeFolosite} sec</p>
 
-                <p><strong>Candidat:</strong> ${nume}</p>
-                <p><strong>Punctaj:</strong> ${corecte} / ${totalIntrebari}</p>
-                <p><strong>Procent:</strong> ${procent}%</p>
-                <p><strong>Corecte:</strong> ${corecte}</p>
-                <p><strong>Greșite:</strong> ${gresite.length}</p>
-                <p><strong>Necompletate:</strong> ${necompletate.length}</p>
-            </div>
+                    <div class="score-grid">
+                        <div class="score-box">
+                            Punctaj
+                            <strong>${corecte} / ${totalIntrebari}</strong>
+                        </div>
+                        <div class="score-box correct">
+                            Corecte
+                            <strong>${corecte}</strong>
+                        </div>
+                        <div class="score-box wrong">
+                            Greșite
+                            <strong>${gresite.length}</strong>
+                        </div>
+                    </div>
 
-            <div class="info">
-                <h2>Întrebările greșite</h2>
+                    <p><strong>Procent:</strong> ${procent}%</p>
+                    <p class="unanswered"><strong>Necompletate:</strong> ${necompletate.length}</p>
+                </section>
 
-                <table style="width:100%; border-collapse:collapse; text-align:center;">
-                    <thead>
-                        <tr>
-                            <th style="border:1px solid #ccc; padding:10px;">Întrebarea</th>
-                            <th style="border:1px solid #ccc; padding:10px;">Răspunsul elevului</th>
-                            <th style="border:1px solid #ccc; padding:10px;">Răspunsul corect</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${randuriGresite}
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="info">
-                <h2>Întrebările necompletate</h2>
-                <p>${listaNecompletate}</p>
-            </div>
-
-            <div class="info">
-                <button
-                    type="button"
-                    onclick="
-                        const sectiune = document.getElementById('baremComplet');
-                        sectiune.style.display =
-                            sectiune.style.display === 'none' ? 'block' : 'none';
-                        this.innerText =
-                            sectiune.style.display === 'none'
-                            ? 'AFIȘEAZĂ BAREMUL COMPLET'
-                            : 'ASCUNDE BAREMUL COMPLET';
-                    "
-                >
-                    AFIȘEAZĂ BAREMUL COMPLET
-                </button>
-
-                <div id="baremComplet" style="display:none; margin-top:20px;">
-                    <h2>Baremul complet</h2>
-
-                    <table style="width:100%; border-collapse:collapse; text-align:center;">
+                <section class="result-card">
+                    <h2>Întrebările greșite</h2>
+                    <table class="result-table">
                         <thead>
                             <tr>
-                                <th style="border:1px solid #ccc; padding:10px;">Întrebarea</th>
-                                <th style="border:1px solid #ccc; padding:10px;">Răspuns corect</th>
+                                <th>Întrebarea</th>
+                                <th>Răspunsul elevului</th>
+                                <th>Răspunsul corect</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            ${randuriBarem}
-                        </tbody>
+                        <tbody>${randuriGresite}</tbody>
                     </table>
-                </div>
+                </section>
+
+                <section class="result-card">
+                    <h2>Întrebările necompletate</h2>
+                    <p>${listaNecompletate}</p>
+                </section>
+
+                <section class="result-card">
+                    <button
+                        class="toggle-button"
+                        type="button"
+                        onclick="
+                            const zona = document.getElementById('baremComplet');
+                            const deschis = zona.hidden === false;
+                            zona.hidden = deschis;
+                            this.textContent = deschis
+                                ? 'AFIȘEAZĂ BAREMUL COMPLET'
+                                : 'ASCUNDE BAREMUL COMPLET';
+                        "
+                    >
+                        AFIȘEAZĂ BAREMUL COMPLET
+                    </button>
+
+                    <div id="baremComplet" class="answer-key-grid" hidden>
+                        ${baremComplet}
+                    </div>
+                </section>
             </div>
-        </div>
+
+            <footer>
+                © 2026 Admitere Medicină – dr. Zamfir Alexandru
+            </footer>
+        </main>
     `;
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
 }
+
 genereazaIntrebari();
 pornesteTimer();

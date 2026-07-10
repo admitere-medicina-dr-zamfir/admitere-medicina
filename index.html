@@ -1,58 +1,69 @@
 <!DOCTYPE html>
 <html lang="ro">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulare Admitere - Zamfir Alexandru</title>
+    <meta name="theme-color" content="#071a33">
+    <title>Admitere Medicină – dr. Zamfir Alexandru</title>
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<header>
-    <h1>Simulare Admitere</h1>
-    <h2>Pregătire Admitere Medicină</h2>
-    <p>Profesor: <strong>Zamfir Alexandru</strong></p>
-</header>
+    <!-- Intro animat -->
+    <div id="intro" class="intro" aria-label="Intro Admitere Medicină">
+        <button id="skipIntro" class="skip-intro" type="button">Sari peste</button>
 
+        <div class="intro-glow"></div>
 
-<div class="container">
+        <div class="intro-content">
+            <img src="assets/logo.svg" alt="Logo Admitere Medicină" class="intro-logo">
+            <h1 class="intro-title">ADMITERE MEDICINĂ</h1>
+            <p class="intro-doctor">dr. Zamfir Alexandru</p>
+            <p class="intro-motto">Pregătire • Evaluare • Performanță</p>
+            <div class="intro-line"></div>
+        </div>
+    </div>
 
-    <div class="info">
+    <!-- Aplicația -->
+    <main id="app" class="app-shell app-hidden">
+        <header class="site-header">
+            <div class="brand">
+                <img src="assets/logo.svg" alt="Logo" class="brand-logo">
+                <div>
+                    <h1 id="titluTest">Simulare Admitere</h1>
+                    <h2>Admitere Medicină – dr. Zamfir Alexandru</h2>
+                    <p id="dataAfisata">Data testului</p>
+                </div>
+            </div>
+        </header>
 
-        <label>
-            Nume și prenume:
-            <input type="text" id="nume" placeholder="Introduceți numele">
-        </label>
+        <div class="container">
+            <section class="info-card">
+                <label for="nume">Nume și prenume</label>
+                <input type="text" id="nume" autocomplete="name" placeholder="Introduceți numele și prenumele">
 
-        <div id="timer">
-            Timp rămas: 150:00
+                <div class="status-grid">
+                    <div id="timer" class="status-box timer-box">Timp rămas: 150:00</div>
+                    <div id="progress" class="status-box">Întrebări completate: 0 / 100</div>
+                </div>
+            </section>
+
+            <form id="testForm">
+                <section id="questions" class="answer-sheet" aria-label="Borderou de răspuns"></section>
+
+                <button id="submitButton" class="primary-button" type="button" onclick="predaTest(false)">
+                    PREDĂ LUCRAREA
+                </button>
+            </form>
         </div>
 
-    </div>
+        <footer>
+            © 2026 Admitere Medicină – dr. Zamfir Alexandru
+        </footer>
+    </main>
 
-
-    <div id="progress">
-        Întrebări completate: 0 / 100
-    </div>
-
-
-    <form id="testForm">
-
-        <div id="questions"></div>
-
-        <button type="button" onclick="predaTest()">
-            PREDĂ LUCRAREA
-        </button>
-
-    </form>
-
-
-</div>
-
-<script src="barem.js"></script>
-<script src="app.js"></script>
-
+    <script src="barem.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
