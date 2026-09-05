@@ -4,12 +4,14 @@
  */
 
 import { validateQuestion, validateQuestionBank } from "./question-validator.js";
-
+import { TEST_1_QUESTIONS } from "./biology/topografie-celula-genetica-tesuturi.js";
 /**
  * Colecția centrală de întrebări Atlas.
  */
 const questionBank = [];
-
+TEST_1_QUESTIONS.forEach((question) => {
+  addQuestion(question);
+});
 /**
  * Adaugă o singură întrebare în bancă.
  *

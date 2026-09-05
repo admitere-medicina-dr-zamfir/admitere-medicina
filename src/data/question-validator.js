@@ -61,11 +61,16 @@ function validateQuestion(question) {
     }
 
     // Variante de răspuns
-    if (!Array.isArray(question.options) || question.options.length < 2) {
-        errors.push(
-            "Întrebarea trebuie să conțină cel puțin două variante de răspuns."
-        );
-    }
+if (
+  !question.options ||
+  typeof question.options !== "object" ||
+  Array.isArray(question.options) ||
+  Object.keys(question.options).length < 2
+) {
+  errors.push(
+    "Întrebarea trebuie să conțină cel puțin două variante de răspuns."
+  );
+}
 
     // Răspunsuri corecte
     if (
@@ -76,18 +81,20 @@ function validateQuestion(question) {
     }
 
     // Verifică dacă răspunsurile corecte există în options
-    if (
-        Array.isArray(question.options) &&
-        Array.isArray(question.correctAnswers)
-    ) {
-        question.correctAnswers.forEach((answer) => {
-            if (!question.options.includes(answer)) {
-                errors.push(
-                    `Răspunsul corect "${answer}" nu există în variantele de răspuns.`
-                );
-            }
-        });
+if (
+  question.options &&
+  typeof question.options === "object" &&
+  !Array.isArray(question.options) &&
+  Array.isArray(question.correctAnswers)
+) {
+  question.correctAnswers.forEach((answer) => {
+    if (!Object.prototype.hasOwnProperty.call(question.options, answer)) {
+      errors.push(
+        `Răspunsul corect "${answer}" nu există în variantele de răspuns.`
+      );
     }
+  });
+}
 
     // SINGLE trebuie să aibă exact un răspuns corect
     if (

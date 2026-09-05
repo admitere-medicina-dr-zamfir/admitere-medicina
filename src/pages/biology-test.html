@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Atlas BioBank – Test Biologie</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7fb;
+            color: #10233f;
+        }
+
+        header {
+            background: linear-gradient(135deg, #061c36, #123e70);
+            color: white;
+            border-bottom: 3px solid #d6b15e;
+            padding: 22px 30px;
+        }
+
+        .header-content {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 27px;
+        }
+
+        header p {
+            margin: 7px 0 0;
+            opacity: .9;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 30px auto 60px;
+            padding: 0 24px;
+        }
+
+        .test-info {
+            background: white;
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin-bottom: 22px;
+            box-shadow: 0 5px 18px rgba(0,0,0,.07);
+        }
+
+        .test-info h2 {
+            margin: 0 0 8px;
+        }
+
+        #questionCount {
+            font-weight: bold;
+            color: #526174;
+        }
+
+        .question {
+            background: white;
+            border-radius: 14px;
+            padding: 22px 25px;
+            margin-bottom: 18px;
+            box-shadow: 0 5px 18px rgba(0,0,0,.07);
+            border-left: 4px solid #d6b15e;
+        }
+
+        .question-title {
+            font-weight: bold;
+            font-size: 17px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .option {
+            display: block;
+            padding: 10px 12px;
+            margin: 7px 0;
+            border-radius: 8px;
+            background: #f6f8fb;
+            cursor: pointer;
+        }
+
+        .option:hover {
+            background: #edf2f8;
+        }
+
+        .option input {
+            margin-right: 10px;
+        }
+
+        .submit-area {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        #submitTest {
+            border: none;
+            border-radius: 9px;
+            background: #0b315c;
+            color: white;
+            padding: 14px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #submitTest:hover {
+            background: #154b83;
+        }
+
+        #message {
+            margin-top: 18px;
+            font-weight: bold;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #0b315c;
+            font-weight: bold;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="header-content">
+        <h1>Atlas BioBank – Biologie</h1>
+        <p>Test de verificare</p>
+    </div>
+</header>
+
+<main>
+
+    <a class="back" href="./biology.html">← Înapoi la capitole</a>
+
+    <section class="test-info">
+        <h2 id="testTitle">Test 1</h2>
+        <div id="questionCount">Se încarcă întrebările...</div>
+    </section>
+
+    <section id="questions"></section>
+
+    <div class="submit-area">
+        <button id="submitTest">Predă testul</button>
+        <div id="message"></div>
+    </div>
+
+</main>
+
+<script type="module">
+
+import { TEST_1_QUESTIONS }
+from "../data/biology/topografie-celula-genetica-tesuturi.js";
+
+const container = document.getElementById("questions");
+const count = document.getElementById("questionCount");
+const submitButton = document.getElementById("submitTest");
+const message = document.getElementById("message");
+
+count.textContent =
+    `${TEST_1_QUESTIONS.length} întrebări disponibile`;
+
+function renderQuestions() {
+
+    container.innerHTML = "";
+
+    TEST_1_QUESTIONS.forEach((question, index) => {
+
+        const card = document.createElement("article");
+        card.className = "question";
+
+        const title = document.createElement("div");
+        title.className = "question-title";
+        title.textContent = `${index + 1}. ${question.text}`;
+
+        card.appendChild(title);
+
+        Object.entries(question.options).forEach(([letter, text]) => {
+
+            const label = document.createElement("label");
+            label.className = "option";
+
+            const input = document.createElement("input");
+
+            input.type =
+                question.type === "multiple"
+                    ? "checkbox"
+                    : "radio";
+
+            input.name = `question-${index}`;
+            input.value = letter;
+
+            label.appendChild(input);
+            label.appendChild(
+                document.createTextNode(`${letter}. ${text}`)
+            );
+
+            card.appendChild(label);
+        });
+
+        container.appendChild(card);
+    });
+}
+
+renderQuestions();
+
+submitButton.addEventListener("click", () => {
+
+    const confirmSubmit = confirm(
+        "Ești sigur că dorești să predai testul? După predare nu vei mai putea reveni la acest test."
+    );
+
+    if (!confirmSubmit) {
+        return;
+    }
+
+    submitButton.disabled = true;
+
+    document
+        .querySelectorAll("input")
+        .forEach(input => input.disabled = true);
+
+    message.textContent =
+        "Testul a fost predat. Răspunsurile au fost închise.";
+});
+
+</script>
+
+</body>
+</html>
