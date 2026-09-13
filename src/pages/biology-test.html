@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Atlas BioBank – Test Biologie</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7fb;
+            color: #10233f;
+        }
+
+        header {
+            background: linear-gradient(135deg, #061c36, #123e70);
+            color: white;
+            border-bottom: 3px solid #d6b15e;
+            padding: 22px 30px;
+        }
+
+        .header-content {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 27px;
+        }
+
+        header p {
+            margin: 7px 0 0;
+            opacity: .9;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 30px auto 60px;
+            padding: 0 24px;
+        }
+
+        .test-info {
+            background: white;
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin-bottom: 22px;
+            box-shadow: 0 5px 18px rgba(0,0,0,.07);
+        }
+
+        .test-info h2 {
+            margin: 0 0 8px;
+        }
+
+        #questionCount {
+            font-weight: bold;
+            color: #526174;
+        }
+
+        .question {
+            background: white;
+            border-radius: 14px;
+            padding: 22px 25px;
+            margin-bottom: 18px;
+            box-shadow: 0 5px 18px rgba(0,0,0,.07);
+            border-left: 4px solid #d6b15e;
+        }
+
+        .question-title {
+            font-weight: bold;
+            font-size: 17px;
+            line-height: 1.5;
+            white-space: pre-line;
+            margin-bottom: 16px;
+        }
+
+        .option {
+            display: block;
+            padding: 10px 12px;
+            margin: 7px 0;
+            border-radius: 8px;
+            background: #f6f8fb;
+            cursor: pointer;
+        }
+
+        .option:hover {
+            background: #edf2f8;
+        }
+
+        .option input {
+            margin-right: 10px;
+        }
+
+        .submit-area {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        #submitTest {
+            border: none;
+            border-radius: 9px;
+            background: #0b315c;
+            color: white;
+            padding: 14px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #submitTest:hover {
+            background: #154b83;
+        }
+
+        #message {
+            margin-top: 18px;
+            font-weight: bold;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #0b315c;
+            font-weight: bold;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="header-content">
+        <h1>Atlas BioBank – Biologie</h1>
+        <p>Test de verificare</p>
+    </div>
+</header>
+
+<main>
+
+    <a class="back" href="./biology.html">← Înapoi la capitole</a>
+
+    <section class="test-info">
+    <h2 id="testTitle">Test 1</h2>
+    <div id="questionCount">Se încarcă întrebările...</div>
+
+    <div style="margin-top:18px;">
+        <label for="studentName"><strong>Nume și prenume:</strong></label>
+        <input
+            type="text"
+            id="studentName"
+            placeholder="Introduceți numele și prenumele"
+            autocomplete="name"
+            style="
+                width:100%;
+                margin-top:8px;
+                padding:12px;
+                border:1px solid #ccd5e0;
+                border-radius:8px;
+                font-size:16px;
+                box-sizing:border-box;
+            "
+        >
+    </div>
+
+    <div
+        id="timer"
+        style="
+            margin-top:15px;
+            font-size:20px;
+            font-weight:bold;
+            color:#c62828;
+        "
+    >
+        Timp rămas: 60:00
+    </div>
+</section>
+
+    <section id="questions"></section>
+
+    <div class="submit-area">
+        <button id="submitTest">Predă testul</button>
+        <div id="message"></div>
+    </div>
+
+</main>
+
+<script type="module">
+
+import { TEST_1_QUESTIONS }
+from "../data/biology/topografie-celula-genetica-tesuturi-test1.js";
+
+import { TEST_2_QUESTIONS }
+from "../data/biology/topografie-celula-genetica-tesuturi-test2.js";
+const RESULTS_ENDPOINT = "https://script.google.com/macros/s/AKfycby9v11uD8b-M-kPeOeoAEnvOTu5yajMSmmqOUBAePZMHONgMzGfRAlgV6b3EM9jet5mGg/exec";
+const params = new URLSearchParams(window.location.search);
+const testNumber = params.get("test") || "1";
+const ENABLED_TESTS = ["1"];
+
+if (!ENABLED_TESTS.includes(testNumber)) {
+    window.location.replace("./biology.html");
+}
+const ACTIVE_QUESTIONS =
+  testNumber === "2" ? TEST_2_QUESTIONS : TEST_1_QUESTIONS;
+  document.getElementById("testTitle").textContent = `Test ${testNumber}`;
+const container = document.getElementById("questions");
+const count = document.getElementById("questionCount");
+const submitButton = document.getElementById("submitTest");
+const message = document.getElementById("message");
+
+count.textContent =
+   `${ACTIVE_QUESTIONS.length} întrebări disponibile`;
+
+function renderQuestions() {
+
+    container.innerHTML = "";
+
+   ACTIVE_QUESTIONS.forEach((question, index) => {
+
+        const card = document.createElement("article");
+        card.className = "question";
+
+        const title = document.createElement("div");
+        title.className = "question-title";
+        title.textContent = `${index + 1}. ${question.text}`;
+
+        card.appendChild(title);
+
+        Object.entries(question.options).forEach(([letter, text]) => {
+
+            const label = document.createElement("label");
+            label.className = "option";
+
+            const input = document.createElement("input");
+
+            input.type =
+                question.type === "multiple"
+                    ? "checkbox"
+                    : "radio";
+
+            input.name = `question-${index}`;
+            input.value = letter;
+
+            label.appendChild(input);
+            label.appendChild(
+                document.createTextNode(`${letter}. ${text}`)
+            );
+
+            card.appendChild(label);
+        });
+
+        container.appendChild(card);
+    });
+}
+
+renderQuestions();
+// ===== CRONOMETRU TEST: 60 MINUTE =====
+const TEST_DURATION = 60 * 60; // 60 minute în secunde
+let timeLeft = TEST_DURATION;
+
+const timerElement = document.getElementById("timer");
+
+function updateTimer() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+
+    timerElement.textContent =
+        `Timp rămas: ${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+}
+
+updateTimer();
+
+const timerInterval = setInterval(() => {
+    timeLeft--;
+
+    if (timeLeft <= 0) {
+        timeLeft = 0;
+        updateTimer();
+        clearInterval(timerInterval);
+
+        alert("Timpul de 60 de minute a expirat. Testul va fi predat automat.");
+
+        submitButton.click();
+        return;
+    }
+
+    updateTimer();
+}, 1000);
+submitButton.addEventListener("click", () => {
+    const confirmSubmit = confirm(
+        "Ești sigur că dorești să predai testul? După predare nu vei mai putea modifica răspunsurile."
+    );
+
+    if (!confirmSubmit) {
+        return;
+    }
+const studentName = document.getElementById("studentName").value.trim();
+
+if (!studentName) {
+    alert("Te rog introdu numele și prenumele înainte de predarea testului.");
+    document.getElementById("studentName").focus();
+    return;
+}
+    let corecte = 0;
+    let gresite = 0;
+    let necompletate = 0;
+
+    const intrebariCorecte = [];
+    const intrebariGresite = [];
+    const intrebariNecompletate = [];
+
+    ACTIVE_QUESTIONS.forEach((question, index) => {
+        const allInputs = Array.from(
+            document.querySelectorAll(`input[name="question-${index}"]`)
+        );
+
+        const selectedInputs = allInputs.filter(input => input.checked);
+
+        // Marchează toate variantele corecte cu verde
+        allInputs.forEach((input) => {
+            const label = input.closest("label");
+
+            if (question.correctAnswers.includes(input.value)) {
+                label.style.backgroundColor = "#dff5e1";
+                label.style.border = "2px solid #2e8b57";
+            }
+        });
+
+        // Necompletată
+        if (selectedInputs.length === 0) {
+            necompletate++;
+            intrebariNecompletate.push(index + 1);
+            return;
+        }
+
+        const selectedAnswers = selectedInputs
+            .map(input => input.value)
+            .sort();
+
+        const correctAnswers = [...question.correctAnswers].sort();
+
+        const esteCorect =
+            selectedAnswers.length === correctAnswers.length &&
+            selectedAnswers.every(
+                (answer, i) => answer === correctAnswers[i]
+            );
+
+        if (esteCorect) {
+            corecte++;
+            intrebariCorecte.push(index + 1);
+        } else {
+            gresite++;
+            intrebariGresite.push(index + 1);
+
+            // Variantele bifate greșit devin roșii
+            selectedInputs.forEach((input) => {
+                if (!question.correctAnswers.includes(input.value)) {
+                    const label = input.closest("label");
+                    label.style.backgroundColor = "#fde2e2";
+                    label.style.border = "2px solid #c62828";
+                }
+            });
+        }
+    });
+
+    const total = ACTIVE_QUESTIONS.length;
+    const procent = Math.round((corecte / total) * 100);
+
+    submitButton.disabled = true;
+
+    document
+        .querySelectorAll("#questions input")
+        .forEach((input) => {
+            input.disabled = true;
+        });
+
+    const listaCorecte =
+        intrebariCorecte.length > 0
+            ? intrebariCorecte.join(", ")
+            : "-";
+
+    const listaGresite =
+        intrebariGresite.length > 0
+            ? intrebariGresite.join(", ")
+            : "-";
+
+    const listaNecompletate =
+        intrebariNecompletate.length > 0
+            ? intrebariNecompletate.join(", ")
+            : "-";
+const timpUtilizat = TEST_DURATION - timeLeft;
+
+fetch(RESULTS_ENDPOINT, {
+    method: "POST",
+    body: JSON.stringify({
+        nume: studentName,
+        materie: "Biologie",
+        capitol: "Topografie – Celula – Genetica – Tesuturi",
+        test: testNumber,
+        scor: corecte,
+        total: total,
+        procent: procent,
+        corecte: corecte,
+        gresite: gresite,
+        necompletate: necompletate,
+        intrebariGresite: listaGresite,
+        timpUtilizat: timpUtilizat
+    })
+}).catch(error => {
+    console.error("Eroare la trimiterea rezultatului:", error);
+});
+    message.innerHTML = `
+        <div style="
+            margin-top:20px;
+            padding:20px;
+            background:white;
+            border-radius:14px;
+            border-left:5px solid #d6b15e;
+            line-height:1.8;
+        ">
+            <h3 style="margin-top:0;">
+                Rezultat Test ${testNumber}
+            </h3>
+
+            <p>
+                Scor:
+                <strong>${corecte} / ${total}</strong>
+                (${procent}%)
+            </p>
+
+            <p>
+                Răspunsuri corecte:
+                <strong>${corecte}</strong><br>
+                Întrebări:
+                <strong>${listaCorecte}</strong>
+            </p>
+
+            <p>
+                Răspunsuri greșite:
+                <strong>${gresite}</strong><br>
+                Întrebări:
+                <strong>${listaGresite}</strong>
+            </p>
+
+            <p>
+                Întrebări necompletate:
+                <strong>${necompletate}</strong><br>
+                Întrebări:
+                <strong>${listaNecompletate}</strong>
+            </p>
+
+            <hr>
+
+            <p style="margin-bottom:0;">
+                <strong style="color:#2e8b57;">Verde</strong>
+                = răspuns corect<br>
+
+                <strong style="color:#c62828;">Roșu</strong>
+                = răspuns ales greșit
+            </p>
+        </div>
+    `;
+
+    message.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+});
+    message.innerHTML = `
+        <div style="
+            margin-top:20px;
+            padding:20px;
+            background:white;
+            border-radius:14px;
+            border-left:5px solid #d6b15e;
+            line-height:1.8;
+        ">
+            <h3 style="margin-top:0;">
+                Rezultat Test ${testNumber}
+            </h3>
+
+            <p>
+                Scor:
+                <strong>${corecte} / ${total}</strong>
+                (${procent}%)
+            </p>
+
+            <p>
+                Răspunsuri corecte:
+                <strong>${corecte}</strong><br>
+                Întrebări:
+                <strong>${listaCorecte}</strong>
+            </p>
+
+            <p>
+                Răspunsuri greșite:
+                <strong>${gresite}</strong><br>
+                Întrebări:
+                <strong>${listaGresite}</strong>
+            </p>
+
+            <p>
+                Întrebări necompletate:
+                <strong>${necompletate}</strong><br>
+                Întrebări:
+                <strong>${listaNecompletate}</strong>
+            </p>
+
+            <hr>
+
+            <p style="margin-bottom:0;">
+                <strong style="color:#2e8b57;">Verde</strong>
+                = răspuns corect<br>
+
+                <strong style="color:#c62828;">Roșu</strong>
+                = răspuns ales greșit
+            </p>
+        </div>
+    `;
+
+    message.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+
+</script>
+
+</body>
+</html>
