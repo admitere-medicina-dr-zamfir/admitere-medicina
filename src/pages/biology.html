@@ -150,7 +150,7 @@
                     Test 1 · 60 întrebări
                 </button>
 
-                <button class="test-button" id="test2">
+                <button class="test-button disabled" id="test2" disabled>
                     Test 2 · 60 întrebări
                 </button>
             </div>
@@ -209,8 +209,10 @@
 </footer>
 <script>
     document.getElementById("test1").addEventListener("click", () => {
-        window.location.href = "./biology-test.html";
+        window.location.href = "./biology-test.html?test=1";
     });
+
+    
 </script>
 </body>
 </html>
