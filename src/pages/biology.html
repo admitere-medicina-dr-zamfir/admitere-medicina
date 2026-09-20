@@ -146,11 +146,11 @@
             </h3>
 
             <div class="tests">
-                <button class="test-button" id="test1">
+                <button class="test-button disabled" id="test1" disabled>
                     Test 1 · 60 întrebări
                 </button>
 
-                <button class="test-button disabled" id="test2" disabled>
+                <button class="test-button" id="test2">
                     Test 2 · 60 întrebări
                 </button>
             </div>
@@ -211,7 +211,9 @@
     document.getElementById("test1").addEventListener("click", () => {
         window.location.href = "./biology-test.html?test=1";
     });
-
+document.getElementById("test2").addEventListener("click", () => {
+    window.location.href = "./biology-test.html?test=2";
+});
     
 </script>
 </body>

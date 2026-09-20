@@ -200,7 +200,7 @@ from "../data/biology/topografie-celula-genetica-tesuturi-test2.js";
 const RESULTS_ENDPOINT = "https://script.google.com/macros/s/AKfycby9v11uD8b-M-kPeOeoAEnvOTu5yajMSmmqOUBAePZMHONgMzGfRAlgV6b3EM9jet5mGg/exec";
 const params = new URLSearchParams(window.location.search);
 const testNumber = params.get("test") || "1";
-const ENABLED_TESTS = ["1"];
+const ENABLED_TESTS = ["2"];
 
 if (!ENABLED_TESTS.includes(testNumber)) {
     window.location.replace("./biology.html");
