@@ -197,16 +197,23 @@ from "../data/biology/topografie-celula-genetica-tesuturi-test1.js";
 
 import { TEST_2_QUESTIONS }
 from "../data/biology/topografie-celula-genetica-tesuturi-test2.js";
+import { TEST_3_QUESTIONS }
+from "../data/biology/sistemul-nervos-test1.js";
 const RESULTS_ENDPOINT = "https://script.google.com/macros/s/AKfycby9v11uD8b-M-kPeOeoAEnvOTu5yajMSmmqOUBAePZMHONgMzGfRAlgV6b3EM9jet5mGg/exec";
 const params = new URLSearchParams(window.location.search);
+const ENABLED_TESTS = ["1", "2", "3"];
 const testNumber = params.get("test") || "1";
-const ENABLED_TESTS = ["2"];
 
 if (!ENABLED_TESTS.includes(testNumber)) {
-    window.location.replace("./biology.html");
+     window.location.replace("./biology.html");
 }
 const ACTIVE_QUESTIONS =
-  testNumber === "2" ? TEST_2_QUESTIONS : TEST_1_QUESTIONS;
+    testNumber === "3"
+        ? TEST_3_QUESTIONS
+        : testNumber === "2"
+            ? TEST_2_QUESTIONS
+            : TEST_1_QUESTIONS;
+
   document.getElementById("testTitle").textContent = `Test ${testNumber}`;
 const container = document.getElementById("questions");
 const count = document.getElementById("questionCount");
@@ -230,6 +237,13 @@ function renderQuestions() {
         title.textContent = `${index + 1}. ${question.text}`;
 
         card.appendChild(title);
+        if (question.image) {
+  const img = document.createElement("img");
+  img.src = question.image;
+  img.alt = `Figura pentru întrebarea ${index + 1}`;
+  img.className = "question-image";
+  card.appendChild(img);
+}
 
         Object.entries(question.options).forEach(([letter, text]) => {
 
@@ -471,62 +485,7 @@ fetch(RESULTS_ENDPOINT, {
         block: "center"
     });
 });
-    message.innerHTML = `
-        <div style="
-            margin-top:20px;
-            padding:20px;
-            background:white;
-            border-radius:14px;
-            border-left:5px solid #d6b15e;
-            line-height:1.8;
-        ">
-            <h3 style="margin-top:0;">
-                Rezultat Test ${testNumber}
-            </h3>
-
-            <p>
-                Scor:
-                <strong>${corecte} / ${total}</strong>
-                (${procent}%)
-            </p>
-
-            <p>
-                Răspunsuri corecte:
-                <strong>${corecte}</strong><br>
-                Întrebări:
-                <strong>${listaCorecte}</strong>
-            </p>
-
-            <p>
-                Răspunsuri greșite:
-                <strong>${gresite}</strong><br>
-                Întrebări:
-                <strong>${listaGresite}</strong>
-            </p>
-
-            <p>
-                Întrebări necompletate:
-                <strong>${necompletate}</strong><br>
-                Întrebări:
-                <strong>${listaNecompletate}</strong>
-            </p>
-
-            <hr>
-
-            <p style="margin-bottom:0;">
-                <strong style="color:#2e8b57;">Verde</strong>
-                = răspuns corect<br>
-
-                <strong style="color:#c62828;">Roșu</strong>
-                = răspuns ales greșit
-            </p>
-        </div>
-    `;
-
-    message.scrollIntoView({
-        behavior: "smooth",
-        block: "center"
-    });
+    
 
 
 </script>
