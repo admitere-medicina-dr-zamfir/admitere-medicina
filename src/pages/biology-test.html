@@ -199,20 +199,24 @@ import { TEST_2_QUESTIONS }
 from "../data/biology/topografie-celula-genetica-tesuturi-test2.js";
 import { TEST_3_QUESTIONS }
 from "../data/biology/sistemul-nervos-test1.js";
+import { TEST_4_QUESTIONS }
+from "../data/biology/sistemul-nervos-test4.js";
 const RESULTS_ENDPOINT = "https://script.google.com/macros/s/AKfycby9v11uD8b-M-kPeOeoAEnvOTu5yajMSmmqOUBAePZMHONgMzGfRAlgV6b3EM9jet5mGg/exec";
 const params = new URLSearchParams(window.location.search);
-const ENABLED_TESTS = ["1", "2", "3"];
+const ENABLED_TESTS = ["1", "2", "3", "4"];
 const testNumber = params.get("test") || "1";
 
 if (!ENABLED_TESTS.includes(testNumber)) {
      window.location.replace("./biology.html");
 }
 const ACTIVE_QUESTIONS =
-    testNumber === "3"
-        ? TEST_3_QUESTIONS
-        : testNumber === "2"
-            ? TEST_2_QUESTIONS
-            : TEST_1_QUESTIONS;
+  testNumber === "4"
+    ? TEST_4_QUESTIONS
+    : testNumber === "3"
+      ? TEST_3_QUESTIONS
+      : testNumber === "2"
+        ? TEST_2_QUESTIONS
+        : TEST_1_QUESTIONS;
 
   document.getElementById("testTitle").textContent = `Test ${testNumber}`;
 const container = document.getElementById("questions");
@@ -414,7 +418,9 @@ fetch(RESULTS_ENDPOINT, {
     body: JSON.stringify({
         nume: studentName,
         materie: "Biologie",
-        capitol: "Topografie – Celula – Genetica – Tesuturi",
+        capitol: ["3", "4"].includes(testNumber)
+  ? "Sistemul nervos"
+  : "Topografie – Celulă – Genetică – Țesuturi",
         test: testNumber,
         scor: corecte,
         total: total,

@@ -7,6 +7,7 @@ import { validateQuestion, validateQuestionBank } from "./question-validator.js"
 import { TEST_1_QUESTIONS } from "./biology/topografie-celula-genetica-tesuturi.js";
 import { TEST_2_QUESTIONS } from "./biology/topografie-celula-genetica-tesuturi-test2.js";
 import { TEST_3_QUESTIONS } from "./biology/sistemul-nervos-test1.js";
+import { TEST_4_QUESTIONS } from "./biology/sistemul-nervos-test4.js";
 /**
  * Colecția centrală de întrebări Atlas.
  */
@@ -19,6 +20,10 @@ TEST_2_QUESTIONS.forEach((question) => {
 });
 
 TEST_3_QUESTIONS.forEach((question) => {
+  addQuestion(question);
+});
+
+TEST_4_QUESTIONS.forEach((question) => {
   addQuestion(question);
 });
 /**
