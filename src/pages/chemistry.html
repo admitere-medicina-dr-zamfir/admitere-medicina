@@ -61,11 +61,20 @@
         Test 1 – 40 întrebări
       </button>
     </article>
+
+    <article class="chapter" style="margin-top:16px;">
+      <small>CAPITOLUL 2</small>
+      <h3>Alcani</h3>
+      <button class="test-button" id="chemistryTest2">Test 2 – 40 întrebări</button>
+    </article>
   </main>
 
   <script>
     document.getElementById("chemistryTest1").addEventListener("click", () => {
       window.location.href = "./chemistry-test.html?test=1";
+    });
+    document.getElementById("chemistryTest2").addEventListener("click", () => {
+      window.location.href = "./chemistry-test.html?test=2";
     });
   </script>
 </body>
