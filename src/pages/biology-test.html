@@ -203,16 +203,20 @@ import { TEST_4_QUESTIONS }
 from "../data/biology/sistemul-nervos-test4.js";
 import { BIOLOGY_TEST_5_QUESTIONS }
 from "../data/biology/analizatori-test5.js";
+import { BIOLOGY_TEST_6_QUESTIONS }
+from "../data/biology/analizatori-test6.js";
 const RESULTS_ENDPOINT = "https://script.google.com/macros/s/AKfycby9v11uD8b-M-kPeOeoAEnvOTu5yajMSmmqOUBAePZMHONgMzGfRAlgV6b3EM9jet5mGg/exec";
 const params = new URLSearchParams(window.location.search);
-const ENABLED_TESTS = ["1", "2", "3", "4", "5"];
+const ENABLED_TESTS = ["1", "2", "3", "4", "5", "6"];
 const testNumber = params.get("test") || "1";
 
 if (!ENABLED_TESTS.includes(testNumber)) {
      window.location.replace("./biology.html");
 }
 const ACTIVE_QUESTIONS =
-  testNumber === "5"
+  testNumber === "6"
+    ? BIOLOGY_TEST_6_QUESTIONS
+    : testNumber === "5"
     ? BIOLOGY_TEST_5_QUESTIONS
     : testNumber === "4"
     ? TEST_4_QUESTIONS
@@ -422,7 +426,7 @@ fetch(RESULTS_ENDPOINT, {
     body: JSON.stringify({
         nume: studentName,
         materie: "Biologie",
-        capitol: testNumber === "5"
+        capitol: ["5", "6"].includes(testNumber)
   ? "Analizatori"
   : ["3", "4"].includes(testNumber)
     ? "Sistemul nervos"
