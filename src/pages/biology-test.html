@@ -205,15 +205,20 @@ import { BIOLOGY_TEST_5_QUESTIONS }
 from "../data/biology/analizatori-test5.js";
 import { BIOLOGY_TEST_6_QUESTIONS }
 from "../data/biology/analizatori-test6.js";
+import { BIOLOGY_TEST_7_QUESTIONS }
+from "../data/biology/sistemul-endocrin-test7.js";
 const RESULTS_ENDPOINT = "https://script.google.com/macros/s/AKfycby9v11uD8b-M-kPeOeoAEnvOTu5yajMSmmqOUBAePZMHONgMzGfRAlgV6b3EM9jet5mGg/exec";
 const params = new URLSearchParams(window.location.search);
-const ENABLED_TESTS = ["1", "2", "3", "4", "5", "6"];
+const ENABLED_TESTS = ["1", "2", "3", "4", "5", "6", "7"];
 const testNumber = params.get("test") || "1";
 
 if (!ENABLED_TESTS.includes(testNumber)) {
      window.location.replace("./biology.html");
 }
 const ACTIVE_QUESTIONS =
+testNumber === "7"
+  ? BIOLOGY_TEST_7_QUESTIONS
+  :
   testNumber === "6"
     ? BIOLOGY_TEST_6_QUESTIONS
     : testNumber === "5"
@@ -426,11 +431,13 @@ fetch(RESULTS_ENDPOINT, {
     body: JSON.stringify({
         nume: studentName,
         materie: "Biologie",
-        capitol: ["5", "6"].includes(testNumber)
+       capitol: testNumber === "7"
+  ? "Sistemul endocrin"
+  : ["5", "6"].includes(testNumber)
   ? "Analizatori"
   : ["3", "4"].includes(testNumber)
-    ? "Sistemul nervos"
-    : "Topografie – Celulă – Genetică – Țesuturi",
+  ? "Sistemul nervos"
+  : "Topografie | Celula | Genetică | Țesuturi",
         test: testNumber,
         scor: corecte,
         total: total,
