@@ -207,16 +207,20 @@ import { BIOLOGY_TEST_6_QUESTIONS }
 from "../data/biology/analizatori-test6.js";
 import { BIOLOGY_TEST_7_QUESTIONS }
 from "../data/biology/sistemul-endocrin-test7.js";
+import { BIOLOGY_TEST_8_QUESTIONS }
+from "../data/biology/sistemul-endocrin-test8.js";
 const RESULTS_ENDPOINT = "https://script.google.com/macros/s/AKfycby9v11uD8b-M-kPeOeoAEnvOTu5yajMSmmqOUBAePZMHONgMzGfRAlgV6b3EM9jet5mGg/exec";
 const params = new URLSearchParams(window.location.search);
-const ENABLED_TESTS = ["1", "2", "3", "4", "5", "6", "7"];
+const ENABLED_TESTS = ["1", "2", "3", "4", "5", "6", "7", "8"];
 const testNumber = params.get("test") || "1";
 
 if (!ENABLED_TESTS.includes(testNumber)) {
      window.location.replace("./biology.html");
 }
 const ACTIVE_QUESTIONS =
-testNumber === "7"
+testNumber === "8"
+  ? BIOLOGY_TEST_8_QUESTIONS
+  :testNumber === "7"
   ? BIOLOGY_TEST_7_QUESTIONS
   :
   testNumber === "6"
@@ -431,7 +435,7 @@ fetch(RESULTS_ENDPOINT, {
     body: JSON.stringify({
         nume: studentName,
         materie: "Biologie",
-       capitol: testNumber === "7"
+       capitol: ["7", "8"].includes(testNumber)
   ? "Sistemul endocrin"
   : ["5", "6"].includes(testNumber)
   ? "Analizatori"
