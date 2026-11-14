@@ -197,17 +197,20 @@
 import { CHEMISTRY_TEST_1_QUESTIONS }
   from "../data/chemistry/introducere-structura-test1.js";
 import { CHEMISTRY_TEST_2_QUESTIONS } from "../data/chemistry/alcani-test2.js";
-
+import { CHEMISTRY_TEST_3_QUESTIONS } from "../data/chemistry/alchene-test3.js";
 const RESULTS_ENDPOINT = "https://script.google.com/macros/s/AKfycby9v11uD8b-M-kPeOeoAEnvOTu5yajMSmmqOUBAePZMHONgMzGfRAlgV6b3EM9jet5mGg/exec";
 const params = new URLSearchParams(window.location.search);
-const ENABLED_TESTS = ["1", "2"];
+const ENABLED_TESTS = ["1", "2", "3"];
 const testNumber = params.get("test") || "1";
 
 if (!ENABLED_TESTS.includes(testNumber)) {
   window.location.replace("./chemistry.html");
 }
 
-const ACTIVE_QUESTIONS = testNumber === "2" ? CHEMISTRY_TEST_2_QUESTIONS : CHEMISTRY_TEST_1_QUESTIONS;
+const ACTIVE_QUESTIONS =
+  testNumber === "3" ? CHEMISTRY_TEST_3_QUESTIONS :
+  testNumber === "2" ? CHEMISTRY_TEST_2_QUESTIONS :
+  CHEMISTRY_TEST_1_QUESTIONS;
 
   document.getElementById("testTitle").textContent = `Test ${testNumber}`;
 const container = document.getElementById("questions");
@@ -409,7 +412,7 @@ fetch(RESULTS_ENDPOINT, {
     body: JSON.stringify({
         nume: studentName,
         materie: "Chimie organică",
-capitol: testNumber === "2" ? "Alcani" : "Introducere în studiul chimiei organice și noțiuni de structură chimică",
+capitol: testNumber === "3" ? "Alchene" : testNumber === "2" ? "Alcani" : "Introducere în studiul chimiei organice",
         test: testNumber,
         scor: corecte,
         total: total,
