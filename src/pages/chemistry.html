@@ -67,6 +67,13 @@
       <h3>Alcani</h3>
       <button class="test-button" id="chemistryTest2">Test 2 – 40 întrebări</button>
     </article>
+    <article class="chapter" style="margin-top:16px;">
+  <small>CAPITOLUL 3</small>
+  <h3>Alchene</h3>
+  <button class="test-button" id="chemistryTest3">
+    Test 3 – 40 întrebări
+  </button>
+</article>
   </main>
 
   <script>
@@ -76,6 +83,9 @@
     document.getElementById("chemistryTest2").addEventListener("click", () => {
       window.location.href = "./chemistry-test.html?test=2";
     });
+    document.getElementById("chemistryTest3").addEventListener("click", () => {
+  window.location.href = "./chemistry-test.html?test=3";
+});
   </script>
 </body>
 </html>
