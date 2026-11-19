@@ -150,7 +150,26 @@
     <section class="test-info">
     <h2 id="testTitle">Test 1</h2>
     <div id="questionCount">Se încarcă întrebările...</div>
-
+<div id="test4Instructions" style="display:none; margin-top:16px; padding:16px; background:#f0f7ff; border-left:4px solid #2563eb; border-radius:8px; line-height:1.7;">
+  <strong>Instrucțiuni – Testul 4: Alchine</strong>
+  <p>Durata testului: <strong>60 de minute</strong>.</p>
+  <p>Testul conține <strong>40 de întrebări</strong>, fiecare cu cinci variante de răspuns (A–E).</p>
+  <p>Pentru întrebările cu complement simplu, selectați o singură variantă corectă.</p>
+  <p>Pentru întrebările cu complement grupat, variantele corespund combinațiilor de afirmații indicate în enunț.</p>
+  <p>Completați numele și prenumele înainte de predarea testului. La final, apăsați „Predă testul” pentru corectarea automată și înregistrarea rezultatului.</p>
+  <p><strong>Date utile pentru rezolvarea problemelor:</strong></p>
+<p>
+  Mase atomice relative:
+  A(H) = 1; A(C) = 12; A(N) = 14;
+  A(O) = 16; A(Na) = 23; A(Cl) = 35,5;
+  A(Ca) = 40; A(Cu) = 64;
+  A(Br) = 80; A(Ag) = 108.
+</p>
+<p>
+  Volumul molar: 22,4 L/mol (c.n.).
+  Aerul conține 20% O₂ (procente de volum).
+</p>
+</div>
     <div style="margin-top:18px;">
         <label for="studentName"><strong>Nume și prenume:</strong></label>
         <input
@@ -198,16 +217,20 @@ import { CHEMISTRY_TEST_1_QUESTIONS }
   from "../data/chemistry/introducere-structura-test1.js";
 import { CHEMISTRY_TEST_2_QUESTIONS } from "../data/chemistry/alcani-test2.js";
 import { CHEMISTRY_TEST_3_QUESTIONS } from "../data/chemistry/alchene-test3.js";
+import { CHEMISTRY_TEST_4_QUESTIONS } from "../data/chemistry/alchine-test4.js";
 const RESULTS_ENDPOINT = "https://script.google.com/macros/s/AKfycby9v11uD8b-M-kPeOeoAEnvOTu5yajMSmmqOUBAePZMHONgMzGfRAlgV6b3EM9jet5mGg/exec";
 const params = new URLSearchParams(window.location.search);
-const ENABLED_TESTS = ["1", "2", "3"];
+const ENABLED_TESTS = ["1", "2", "3", "4"];
 const testNumber = params.get("test") || "1";
-
+if (testNumber === "4") {
+  document.getElementById("test4Instructions").style.display = "block";
+}
 if (!ENABLED_TESTS.includes(testNumber)) {
   window.location.replace("./chemistry.html");
 }
 
 const ACTIVE_QUESTIONS =
+  testNumber === "4" ? CHEMISTRY_TEST_4_QUESTIONS :
   testNumber === "3" ? CHEMISTRY_TEST_3_QUESTIONS :
   testNumber === "2" ? CHEMISTRY_TEST_2_QUESTIONS :
   CHEMISTRY_TEST_1_QUESTIONS;
@@ -412,7 +435,7 @@ fetch(RESULTS_ENDPOINT, {
     body: JSON.stringify({
         nume: studentName,
         materie: "Chimie organică",
-capitol: testNumber === "3" ? "Alchene" : testNumber === "2" ? "Alcani" : "Introducere în studiul chimiei organice",
+capitol: testNumber === "4" ? "Alchine" : testNumber === "3" ? "Alchene" : testNumber === "2" ? "Alcani" : "Introducere în studiul chimiei organice",
         test: testNumber,
         scor: corecte,
         total: total,
