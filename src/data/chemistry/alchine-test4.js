@@ -16,7 +16,7 @@ export const CHEMISTRY_TEST_4_QUESTIONS = [
     chapter: "alchine",
     topic: "test-4",
     type: QUESTION_TYPES.SINGLE,
-    text: "Câte alchine izomere de constituție (aciclice) are formula moleculară C₇H₁₂?",
+    text: "Câte alchine izomere de constituție (aciclice) au formula moleculară C₇H₁₂?",
     options: {
       A: "9",
       B: "11",
